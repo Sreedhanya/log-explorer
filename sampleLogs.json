@@ -1,0 +1,26 @@
+[
+  {
+    "timestamp": "2026-02-09T21:10:00.123Z",
+    "level": "info",
+    "service": "reasoning-service",
+    "message": "Job succeeded",
+    "correlationId": "abc-123",
+    "durationMs": 842
+  },
+  {
+    "timestamp": "2026-02-09T21:11:05.456Z",
+    "level": "error",
+    "service": "pcm-bff",
+    "message": "Failed to process request",
+    "correlationId": "def-456",
+    "errorCode": "E_TIMEOUT"
+  },
+  {
+    "timestamp": "2026-02-09T21:12:30.000Z",
+    "level": "warn",
+    "service": "orchestrator",
+    "message": "Retrying downstream call",
+    "correlationId": "ghi-789",
+    "retryCount": 2
+  }
+]
