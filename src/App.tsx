@@ -72,7 +72,11 @@ const filteredLogs = useMemo(() => {
   if(selectedServices.length>0){
     out = out.filter(l => (l.service ?? "") && selectedServices.includes(l.service ?? ""));
   }
-
+out = [...out].sort((a, b) => {
+  const ta = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+  const tb = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+  return tb - ta;
+});
   return out;
 }, [state.status, state.status === "loaded" ? state.logs : null, query, selectedLevels,selectedServices]);
 
@@ -138,15 +142,23 @@ function exportFilteredJson() {
     <>
       <div className='app'>
       <header className="app-header">
-        Log Explorer
+      Log Explorer — Ingest, Filter & Export Structured Logs
       </header>
       <main className="app-main">
         <UploadPanel onTextLoaded={ingestText} /> 
         <div className="card">
 
           <div className="card-title"> Ingestion Status</div>
+          {state.status === "error" && (
+  <div style={{ color: "crimson" }}>
+    Error parsing file: {state.message}
+  </div>
+)}
           {state.status ==="idle" && <div>No file Uploaded yet</div>}
           {state.status ==="parsing" && <div>Parsing file: {state.fileName}</div>}
+       {state.status === "loaded" && state.logs.length === 0 && (
+  <div style={{ color: "crimson" }}>Loaded, but found 0 log rows.</div>
+)}
        {state.status==="loaded" && (
         <>
         <div>Save view</div>
@@ -216,6 +228,9 @@ function exportFilteredJson() {
          
         </div>
         <button onClick={clearAll}>Clear All Filters</button>
+        <div style={{ marginBottom: 8, fontSize: 14, opacity: 0.8 }}>
+  Showing {filteredLogs.length} of {state.logs.length} logs
+</div>
        <div className="split">
         <LogTable logs ={filteredLogs} selectedId={selectedId} onSelect={setSelectedId}/>
        <LogDetails log={selectedLog}/></div></>)}
